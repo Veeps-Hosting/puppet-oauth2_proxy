@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 1.5.0
+No changes, bump version number to avoid confusion with versioning in original project.
+
 ## Release 1.0.1
 Minor bugfix release to have parameter 'version' before it's used in 'source_base_url'.
 
