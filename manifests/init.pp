@@ -18,6 +18,8 @@
 #   Default: "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v${version}"
 # @param tarball_name The name of the tarball
 #   Default: "oauth2-proxy-v${version}.linux-amd64.tar.gz"
+# @param delete_tarball Whether to remove download after extraction.  If true, will download on every run.
+#   Default: false
 # @param provider Provider to use
 #   Default: 'systemd'
 # @param shell Shell to use for oauth2 user
@@ -38,6 +40,7 @@ class oauth2_proxy (
   String           $version         = '7.3.0',
   Stdlib::HTTPUrl  $source_base_url = "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v${version}",
   String           $tarball_name    = "oauth2-proxy-v${version}.linux-amd64.tar.gz",
+  Boolean          $delete_tarball  = false,
   String           $user            = 'oauth2',
 ) {
 
