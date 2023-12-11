@@ -18,32 +18,25 @@ class oauth2_proxy::install {
     user         => $oauth2_proxy::user,
   }
 
-  file { $oauth2_proxy::install_root:
-    ensure => directory,
-    owner  => $oauth2_proxy::user,
-    group  => $oauth2_proxy::group,
-    mode   => '0755',
-  }
-
-  file { "${oauth2_proxy::install_root}/bin":
-    ensure => link,
-    owner  => $oauth2_proxy::user,
-    group  => $oauth2_proxy::group,
-    target => "${oauth2_proxy::install_root}/${base}",
-  }
-
-  file { '/etc/oauth2_proxy':
-    ensure => directory,
-    owner  => $oauth2_proxy::user,
-    group  => $oauth2_proxy::group,
-    mode   => '0755',
-  }
-
-  file { '/var/log/oauth2_proxy':
-    ensure => directory,
-    owner  => $oauth2_proxy::user,
-    group  => $oauth2_proxy::group,
-    mode   => '0775',
+  file {
+    default:
+      owner  => $oauth2_proxy::user,
+      group  => $oauth2_proxy::group,
+      mode   => '0755',
+      ;
+    $oauth2_proxy::install_root:
+      ensure => directory,
+      ;
+    "${oauth2_proxy::install_root}/bin":
+      ensure => link,
+      target => "${oauth2_proxy::install_root}/${base}",
+      ;
+    '/etc/oauth2_proxy':
+      ensure => directory,
+      ;
+    '/var/log/oauth2_proxy':
+      ensure => directory,
+      mode   => '0775',
   }
 
   case $oauth2_proxy::provider {
