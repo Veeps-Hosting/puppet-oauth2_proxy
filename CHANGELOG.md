@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 1.1.0
+Add support for ARM architecture
+
 ## Release 1.0.1
 Minor bugfix release to have parameter 'version' before it's used in 'source_base_url'.
 

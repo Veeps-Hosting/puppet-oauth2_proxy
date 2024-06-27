@@ -17,7 +17,7 @@
 # @param source_base_url The base URL where the software tarball can be found
 #   Default: "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v${version}"
 # @param tarball_name The name of the tarball
-#   Default: "oauth2-proxy-v${version}.linux-amd64.tar.gz"
+#   Default: "oauth2-proxy-v${version}.linux-${architecture}.tar.gz"
 # @param provider Provider to use
 #   Default: 'systemd'
 # @param shell Shell to use for oauth2 user
@@ -37,7 +37,7 @@ class oauth2_proxy (
   String           $provider        = 'systemd',
   String           $version         = '7.3.0',
   Stdlib::HTTPUrl  $source_base_url = "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v${version}",
-  String           $tarball_name    = "oauth2-proxy-v${version}.linux-amd64.tar.gz",
+  Optional[String] $tarball_name    = undef,
   String           $user            = 'oauth2',
 ) {
 
@@ -57,12 +57,23 @@ class oauth2_proxy (
     }
   }
 
-  # bit.ly does not provide x86 builds
-  case $facts[os][architecture] {
-    'x86_64': {}
+  $real_arch = $facts[os][architecture] ? {
+    'x86_64'  => 'amd64',
+    'aarch64' => 'arm64',
+    'armv7l'  => 'armv7',
+    'armv6l'  => 'armv6',
+    'armv5l'  => 'armv5',
+    default   => $facts[os][architecture],
+  }
+
+  case $real_arch {
     'amd64': {}
+    'arm64': {}
+    'armv7': {}
+    'armv6': {}
+    'armv5': {}
     default: {
-      fail("Module ${module_name} is not supported on architecture ${facts[os][architecture]}")
+      fail("Module ${module_name} is not supported on architecture ${real_arch}")
     }
   }
 
@@ -82,7 +93,12 @@ class oauth2_proxy (
     }
   }
 
-  class { 'oauth2_proxy::install': }
+  class { 'oauth2_proxy::install':
+    tarball_name => $tarball_name ? {
+      true  => $tarball_name,
+      default => "oauth2-proxy-v${version}.linux-${real_arch}.tar.gz",
+    },
+  }
 
   if $instances {
     create_resources('oauth2_proxy::instance', $instances)
