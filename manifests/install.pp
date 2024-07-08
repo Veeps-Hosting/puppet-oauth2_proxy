@@ -13,6 +13,7 @@ class oauth2_proxy::install {
     ensure       => present,
     source       => "${oauth2_proxy::source_base_url}/${oauth2_proxy::tarball_name}",
     path         => "${oauth2_proxy::install_root}/${oauth2_proxy::tarball_name}",
+    creates      => "${oauth2_proxy::install_root}/${base}",
     extract      => true,
     extract_path => $oauth2_proxy::install_root,
     user         => $oauth2_proxy::user,
