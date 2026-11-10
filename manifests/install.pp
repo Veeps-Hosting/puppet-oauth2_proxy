@@ -15,6 +15,10 @@ class oauth2_proxy::install {
     path         => "${oauth2_proxy::install_root}/${oauth2_proxy::tarball_name}",
     extract      => true,
     extract_path => $oauth2_proxy::install_root,
+    # Without creates, cleanup deletes the tarball after extraction and every
+    # subsequent run re-downloads it and rewrites the live binary in place;
+    # a host reset mid-extract leaves a truncated binary that cannot start.
+    creates      => "${oauth2_proxy::install_root}/${base}/oauth2-proxy",
     user         => $oauth2_proxy::user,
   }
 
@@ -26,10 +30,12 @@ class oauth2_proxy::install {
   }
 
   file { "${oauth2_proxy::install_root}/bin":
-    ensure => link,
-    owner  => $oauth2_proxy::user,
-    group  => $oauth2_proxy::group,
-    target => "${oauth2_proxy::install_root}/${base}",
+    ensure  => link,
+    owner   => $oauth2_proxy::user,
+    group   => $oauth2_proxy::group,
+    target  => "${oauth2_proxy::install_root}/${base}",
+    # The link must not point at a directory the archive has not extracted yet.
+    require => Archive[$oauth2_proxy::tarball_name],
   }
 
   file { '/etc/oauth2_proxy':
