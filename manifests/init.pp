@@ -13,7 +13,7 @@
 # @param install_root The path where the proxy will be installed
 #   Default: '/opt/oauth2_proxy'
 # @param version The version of oauth2_proxy to install
-#   Default: '7.3.0'
+#   Default: '7.15.6'
 # @param source_base_url The base URL where the software tarball can be found
 #   Default: "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v${version}"
 # @param tarball_name The name of the tarball
@@ -35,7 +35,7 @@ class oauth2_proxy (
   Boolean          $manage_service  = true,
   Boolean          $manage_user     = true,
   String           $provider        = 'systemd',
-  String           $version         = '7.3.0',
+  String           $version         = '7.15.6',
   Stdlib::HTTPUrl  $source_base_url = "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v${version}",
   String           $tarball_name    = "oauth2-proxy-v${version}.linux-amd64.tar.gz",
   String           $user            = 'oauth2',

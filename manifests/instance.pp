@@ -49,7 +49,7 @@ define oauth2_proxy::instance (
         service { "oauth2_proxy@${title}":
           ensure    => 'running',
           enable    => true,
-          subscribe => File["/etc/init.d/oauth2_proxy@${title}", "/etc/oauth2_proxy/${title}.conf"],
+          subscribe => File["/etc/init.d/oauth2_proxy@${title}", "/etc/oauth2_proxy/${title}.conf", "${oauth2_proxy::install_root}/bin"],
           provider  => $oauth2_proxy::provider,
         }
       }
@@ -57,7 +57,7 @@ define oauth2_proxy::instance (
         service { "oauth2_proxy@${title}":
           ensure    => 'running',
           enable    => true,
-          subscribe => File["/etc/init/oauth2_proxy@${title}.conf", "/etc/oauth2_proxy/${title}.conf"],
+          subscribe => File["/etc/init/oauth2_proxy@${title}.conf", "/etc/oauth2_proxy/${title}.conf", "${oauth2_proxy::install_root}/bin"],
           provider  => $oauth2_proxy::provider,
         }
       }
@@ -65,7 +65,10 @@ define oauth2_proxy::instance (
         service { "oauth2_proxy@${title}":
           ensure    => 'running',
           enable    => true,
-          subscribe => File["/etc/oauth2_proxy/${title}.conf"],
+          # Without this, a version bump (which changes the bin symlink's target,
+          # see oauth2_proxy::install) silently leaves the old binary running in
+          # memory until an unrelated config change or a reboot.
+          subscribe => File["/etc/oauth2_proxy/${title}.conf", "${oauth2_proxy::install_root}/bin"],
           provider  => $oauth2_proxy::provider,
         }
       }
